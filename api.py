@@ -12,6 +12,7 @@ import dotenv
 dotenv.load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+print(GROQ_API_KEY)
 
 if not GROQ_API_KEY:
     raise ValueError("Groq API key is missing. Set it in the .env file.")
@@ -32,7 +33,10 @@ llm = ChatGroq(
 async def query(request: Request):
     try:
         session_data = request.session if request.session else []
-        history = "\n".join([f"User: {entry['user']}\nBot: {entry['bot']['message']}" for entry in session_data])
+        history = "\n".join([
+            f"Bot: {entry['response']['message']}" 
+            for entry in session_data if 'response' in entry
+        ])
         full_prompt = f"{history}\nUser: {request.userQuery}"  
 
         if request.userType == "Producer":
