@@ -38,7 +38,7 @@ async def query(request: Request):
             for entry in session_data if 'response' in entry
         ])
         full_prompt = f"{history}\nUser: {request.userQuery}"  
-
+        
         if request.userType == "Producer":
             chain = producerPrompt | llm 
         elif request.userType == "Consumer":
